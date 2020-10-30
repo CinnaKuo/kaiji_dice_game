@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "launch",
+            "type": "lua",
+            "request": "launch",
+            "stopOnEntry": true,
+            "program": "D:/LUAPRATICE/kaiji/kaiji.lua",
+            "console": "integratedTerminal",
+            "outputCapture": []
+        }
+    ]
+}
