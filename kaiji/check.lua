@@ -1,4 +1,4 @@
-local playerAndDice = require("kaiji/playerAndDice")
+local player = require("kaiji/player")
 local enum = require("kaiji/enum")
 local check = {}
 -- 通常在第二行會加上 package.loaded[...] = ... 的敘述，告訴 Lua 將此模組載入。
@@ -25,6 +25,7 @@ function check.IsYorN(answer)
     end    
 end
 
+--p=pass
 function check.IsP(answer)
     if answer=='P'
     then 
@@ -47,14 +48,6 @@ function check.ParticipantsProperty(property,value)
 
 end
 
-local player={}
-player[1]=playerAndDice.new(1)
-
-
-
-print("qwe")
-print(player[1].isDealer)
-check.ParticipantsProperty(player[1].isDealer,false)
 
 
 

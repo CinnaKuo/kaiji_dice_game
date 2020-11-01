@@ -1,12 +1,12 @@
-local enum={}
-enum.status={init="init",pass="pass",settle="settle",waiting="waiting"}
-enum.dice={round=0,dice1=0,dice2=0,dice3=0}
-enum.odds={["nopoint"]=1,["single"]=1,["small"]=1,["big"]=2,["triples"]=3}
-enum.answer={Y="Y",N="N"}
+local Enum={}
+Enum.status={init="init",pass="pass",settle="settle",waiting="waiting"}
+Enum.dice={round=0,dice1=0,dice2=0,dice3=0}
+Enum.type={["nopoint"]="nopoint",["single"]="single",["small"]="small",["big"]="big",["triples"]="triples"}
+Enum.answer={Y="Y",N="N"}
 
 --參考原理https://blog.csdn.net/Cyiano/article/details/54175237
 --範例http://andrejs-cainikovs.blogspot.com/2009/05/lua-constants.html
-function enum.protect(tbl)
+function Enum.protect(tbl)
     return setmetatable({}, {
         __index = tbl,
         __newindex = function(key, value)
@@ -16,7 +16,7 @@ function enum.protect(tbl)
     })
 end
 
-enum.status = enum.protect(enum.status)
-enum.odds = enum.protect(enum.odds)
-enum.answer = enum.protect(enum.answer)
-return enum
+Enum.status = Enum.protect(Enum.status)
+Enum.odds = Enum.protect(Enum.type)
+Enum.answer = Enum.protect(Enum.answer)
+return Enum
