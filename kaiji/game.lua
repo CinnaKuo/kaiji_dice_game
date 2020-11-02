@@ -32,22 +32,31 @@ function Game.PlaceBet(player)
     end
 end
 
-
-
-
-
-function Game.AddRollTimes()
-    local rollTimes  = 0
-    return function()
-        rollTimes=rollTimes+1
-        return rollTimes
-    end
+function Game.BankerIsBigger(player,bankerId,playerId)
+    if player[bankerId].gameResult.diceRank>player[playerId].gameResult.diceRank
+    then
+        return true
+    else
+        return false
+    end   
 end
 
-function Game.RollDice()
-    local dice2={}
-    dice2={math.random(1,6),math.random(1,6),math.random(1,6)}
-    return dice2
+function Game.Settle(player,bankerId)
+    --找出莊家 紀錄莊家的點數
+    --jimmy快給我建議
+    --迴圈每個人 跟莊家比
+    for i=1,#player do    
+        if not player[bankerId].isbanker then  --莊家不跟自己比
+            if Game.BankerIsBigger(player,bankerId,i)
+            then
+                
+            end
+            
+
+        end 
+        player[i].status=Enum.status.settle        
+    end
+    player[bankerId]=Enum.status.settle
 end
 
 -- function Game.GameOver(num)

@@ -7,7 +7,7 @@
             "type": "lua",
             "request": "launch",
             "stopOnEntry": true,
-            "program": "C:/Users/88693/Desktop/kaiji_lua/kaiji/kaiji.lua",
+            "program": "D:/local/kaiji_dice_game/kaiji/kaiji.lua",
             "console": "integratedTerminal",
             "outputCapture": []
         }

@@ -1,7 +1,7 @@
 local enum = require("kaiji/enum")
 --player
 local Player={}
-Player._index=Player
+Player.__index=Player
 function Player:New()
     local p={}
     p.isbanker=false
@@ -15,14 +15,16 @@ function Player:New()
     return p
 end
 
-function Player:gameResult(dicePoint,diceType,odds)
+function Player:GameResult(dicePoint,diceType,odds,diceRank)
     local p={}
     p.dicePoint=dicePoint
     p.diceType=diceType
+    p.diceRank=diceRank
     p.odds=odds
     p.stake=self.stake
     p.winlost=0
     p.result=""
+    self.GameResult=p
     return p
 end
 -- function Player:setting(index,value)
