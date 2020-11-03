@@ -1,5 +1,5 @@
 local player = require("kaiji/player")
-local enum = require("kaiji/enum")
+local Enum = require("kaiji/enum")
 local check = {}
 -- 通常在第二行會加上 package.loaded[...] = ... 的敘述，告訴 Lua 將此模組載入。
 -- 常見的手法是將 __index 這個 metamethod 指向物件本身。這樣的意義在於當 Lua 找不到某個特定屬性或函式時，會從該物件的表中去查找。
@@ -16,8 +16,8 @@ function check.IsPostiveInt(num)
     end     
 end
 
-function check.IsYorN(answer)
-    if answer==enum.answer["Y"] or answer==enum.answer["N"]
+function check.IsYorN(response)
+    if response==Enum.response["Y"] or response==Enum.response["N"]
     then 
         return true
     else
@@ -34,21 +34,6 @@ function check.IsP(answer)
         return false
     end    
 end
-
-
-
-
-function check.ParticipantsProperty(property,value)
-    
-    if property==value then
-        return true
-    else
-        return false
-    end
-
-end
-
-
 
 
 return check

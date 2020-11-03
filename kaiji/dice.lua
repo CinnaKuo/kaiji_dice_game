@@ -18,16 +18,15 @@ end
 
 function Dice.TypeAndOddsArray()
     local d={}
-    d.nopoint=Dice.TypeAndOddsNew("nopoint",1)
-    d.single=Dice.TypeAndOddsNew("single",1)
-    d.small=Dice.TypeAndOddsNew("small",2)
-    d.big=Dice.TypeAndOddsNew("big",2)
-    d.triples=Dice.TypeAndOddsNew("triples",3)
+    d.nopoint=Dice.TypeAndOddsNew(Enum.diceType.nopoint,1)
+    d.single=Dice.TypeAndOddsNew(Enum.diceType.single,1)
+    d.small=Dice.TypeAndOddsNew(Enum.diceType.small,2)
+    d.big=Dice.TypeAndOddsNew(Enum.diceType.big,2)
+    d.triples=Dice.TypeAndOddsNew(Enum.diceType.triples,3)
     return d
 end
 --table.sort(self)=={1,2,3}抽出來
 function Dice:TypeAndOdds(typeAndOddsArray)
-    print(self[1]..self[2]..self[3])
     local rank=0
     if table.sort(self)=={1,2,3}
     then
@@ -74,29 +73,29 @@ function Dice:TypeAndOdds(typeAndOddsArray)
     setmetatable(typeAndOddsArray,Dice)
 end
 
-function Dice.RollDice(player)
-    for i=1,#player do
+function Dice.RollDice(players)
+    math.randomseed(os.time())
+    for i=1,#players do
         repeat          
-            if player[i].status==Enum.status.pass then
+            if players[i].status==Enum.status.pass then
                 break  
             end
             local dicePoint={}
             local diceTypeAndOdd={}
             local rollTimes=0    
             local typeAndOddsArray=Dice.TypeAndOddsArray()  
-            local rank=0     
-            math.randomseed(os.time())
-
+            local rank=0                 
             repeat
                 dicePoint=Dice:New()
                 diceTypeAndOdd,rank=dicePoint:TypeAndOdds(typeAndOddsArray)
                 rollTimes=rollTimes+1
             until (diceTypeAndOdd.type ~="nopoint") or rollTimes==3
-           
-            player[i].gameResult=player[i]:GameResult(dicePoint,diceTypeAndOdd.type,diceTypeAndOdd.odds,rank)
+            print("player"..i.." your dice is "..dicePoint[1]..dicePoint[2]..dicePoint[3])
+            print("player"..i.." your dice type is "..diceTypeAndOdd.type)
+            players[i].gameResult=players[i]:GameResult(dicePoint,diceTypeAndOdd.type,diceTypeAndOdd.odds,rank)
         until true
     end
-    return player
+    return players
 end
 
 return Dice
