@@ -16,14 +16,16 @@ function check.IsPostiveInt(num)
     end     
 end
 
-function check.IsYorN(response)
-    if response==Enum.response["Y"] or response==Enum.response["N"]
+function check.IsValidateResponse(response)
+    if response==Enum.response.y or response==Enum.response.n or response==Enum.response.on or response==Enum.response.kaiji
     then 
         return true
     else
         return false
     end    
 end
+
+
 
 --p=pass
 function check.IsP(answer)

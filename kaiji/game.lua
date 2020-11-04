@@ -83,20 +83,30 @@ function Game.BecomeBankerResponse(i)
     repeat
         io.write("Hi,player"..i..",do you want be banker ? Please answer Y or N.")
         response=io.read()
-        response=response:upper()
-    until (Check.IsYorN(response))
+        response=response:lower()
+    until (Check.IsValidateResponse(response))
     return response
+end
+
+
+function Game.SetupCheatMode(response)
+    if response==Enum.response.y
+    then
+        CheatMode=Enum.cheatMode.off
+    elseif response==Enum.cheatMode.on then
+        CheatMode=Enum.cheatMode.on
+    elseif response==Enum.cheatMode.kaiji then
+        CheatMode=Enum.cheatMode.kaiji
+    end
 end
 
 function Game.BecomeBanker(pplNextToBanker,playerNumber)
 local newbankerId=0
 for i=pplNextToBanker,playerNumber do
     local response=Game.BecomeBankerResponse(i)
-    if response==Enum.response.Y
-    then
-        newbankerId=i
-        break
-    end
+    Game.SetupCheatMode(response)
+    newbankerId=i
+    break
 end
 return newbankerId
 end
@@ -120,7 +130,7 @@ function Game.DecideBanker(players,playerNumber)
     local bankerId=Game.BecomeBanker(bankerId+1,playerNumber)
    
     if bankerId==0 then
-        EndThisGame=false
+        EndThisGame=true
         return players,false
     end
     --上莊
@@ -133,11 +143,12 @@ function Game.IsBecomeBankerAgain(players,bankerId)
     local banker=players[bankerId]
     if banker:IsQualifyBecomeBankerAgain() then
         local response=Game.BecomeBankerResponse(bankerId)
-        if response==Enum.response.Y
+        Game.SetupCheatMode(response)
+        if response==Enum.response.n
         then
-            return true
+            return false
         end
-        return false
+        return true
     end
     return false
 end

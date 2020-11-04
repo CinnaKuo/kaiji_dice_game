@@ -1,5 +1,4 @@
 local Enum = require("kaiji/Enum")
---player
 local Player={}
 Player.__index=Player
 function Player:New()

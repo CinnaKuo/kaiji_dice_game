@@ -9,6 +9,17 @@ function Dice:New()
     return d
 end
 
+function Dice:CheatDice(CheatMode)
+    local d=0
+    if CheatMode==Enum.cheatMode.on then
+        d={math.random(4,6),math.random(4,6),math.random(4,6)}
+    elseif CheatMode==Enum.cheatMode.kaiji then
+        d={1,1,1}
+    end
+    setmetatable(d,Dice);
+    return d
+end
+
 function Dice.TypeAndOddsNew(type,odds)
     local d={}
     d.type=type
@@ -23,7 +34,7 @@ function Dice.TypeAndOddsArray()
     d.small=Dice.TypeAndOddsNew(Enum.diceType.small,2)
     d.big=Dice.TypeAndOddsNew(Enum.diceType.big,2)
     d.triple=Dice.TypeAndOddsNew(Enum.diceType.triple,3)
-    d.oneOneOne=Dice.TypeAndOddsNew(Enum.diceType.oneOneOne,5)
+    d.isAllOne=Dice.TypeAndOddsNew(Enum.diceType.isAllOne,5)
     return d
 end
 
@@ -48,7 +59,7 @@ end
 function Dice:IsBig()
     local rank=0
     if self[1]==4 and self[2]==5 and self[3]==6 then
-        rank=4
+        rank=7
         return true,rank
     end   
     return false,rank
@@ -152,10 +163,13 @@ function Dice.RollDice(players)
             local rank=0                 
             repeat
                 dicePoint=Dice:New()
+                if (CheatMode ~= Enum.cheatMode.off) and players[i].isBanker then
+                    dicePoint=Dice:CheatDice(CheatMode)
+                end
                 print(dicePoint[1]..dicePoint[2]..dicePoint[3])
                 diceTypeAndOdd,rank=dicePoint:TypeAndOdds(typeAndOddsArray)
                 rollTimes=rollTimes+1
-            until (diceTypeAndOdd.type ~="nopoint") or rollTimes==3
+            until (diceTypeAndOdd.type ~="nopoint") or rollTimes==3            
             print("player"..i.." your dice is "..dicePoint[1]..dicePoint[2]..dicePoint[3])
             print("player"..i.." your dice type is "..diceTypeAndOdd.type)
             players[i].gameResult=players[i]:GameResult(dicePoint,diceTypeAndOdd.type,diceTypeAndOdd.odds,rank)

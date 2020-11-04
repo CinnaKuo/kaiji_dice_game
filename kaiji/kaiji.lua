@@ -1,12 +1,14 @@
-EndThisGame=false
-
+local Enum = require("kaiji/Enum")
 local Game = require("kaiji/game")
 local Dice = require("kaiji/dice")
+
+EndThisGame=false
+CheatMode=Enum.cheatMode.off
+
 local playerNumber=0
 local players={}
 local bankerId=0
 local round=1
-
 local sameBanker=false
 
 playerNumber=Game.GetPlayerNumber()
@@ -17,7 +19,7 @@ players=Game.CreatePlayer(playerNumber)
 players[3].isBanker=true
 
 repeat
-    print ("New Round")
+    print ("Round "..round.." start.")
     if not sameBanker then
         players,bankerId=Game.DecideBanker(players,playerNumber)     
     end
