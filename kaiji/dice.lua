@@ -36,9 +36,9 @@ function Dice:IsSmall()
     return false,rank
 end
 
-function Dice:IsOneOneOne()
+function Dice:IsAllOne(dicepointAndCounts)
     local rank=0
-    if self=={1,1,1} then
+    if dicepointAndCounts.one==#self then
         rank=14
         return true,rank
     end   
@@ -54,44 +54,66 @@ function Dice:IsBig()
     return false,rank
 end
 
-function Dice:IsTriple()
+function Dice:IsTriple(dicepointAndCounts)
     local rank=0
-    if self[1] ==self[2] and self[2]==self[3] then
-        rank=self[1]+7
-        return true,rank
-    end   
+    for key, value in pairs(dicepointAndCounts) do
+        if value==#self
+        then rank=self[1]+7
+            return true,rank
+        end
+    end
+  
     return false,rank
 end
 
-function Dice:IsSingle()
+function Dice:IsSingle(dicepointAndCounts)
     local rank=0
+
     if (self[1] == self[2]) or (self[2] == self[3]) or (self[3] == self[1])
     then
-        for i=1,#self do
-            if self[i]==self[i+1]
-            then table.removes(self,i+1)
-                 table.removes(self,i)
+        for key, value in pairs(dicepointAndCounts) do
+            if value==1
+            then rank=Enum.points[key]
+                return true,rank
             end
         end
-        rank=self[1]
-        return true,rank
     end
     return false,rank
 end
 
+function Dice:DicepointAndCounts()
+    local dicepointAndCounts={one=0,two=0,three=0,four=0,five=0,six=0}
+    for i=1,#self do
+        if self[i]==1 then
+            dicepointAndCounts.one=dicepointAndCounts.one+1
+        elseif self[i]==2 then
+            dicepointAndCounts.two=dicepointAndCounts.two+1
+        elseif self[i]==3 then
+            dicepointAndCounts.three=dicepointAndCounts.three+1
+        elseif self[i]==4 then
+            dicepointAndCounts.four=dicepointAndCounts.four+1
+        elseif self[i]==5 then
+            dicepointAndCounts.five=dicepointAndCounts.five+1
+        elseif self[i]==6 then
+            dicepointAndCounts.six=dicepointAndCounts.six+1
+        end
+    end
+    return dicepointAndCounts
+end
+
 function Dice:TypeAndOdds(typeAndOddsArray)
     table.sort(self)
-
+    local dicepointAndCounts=self:DicepointAndCounts()
     local isSmall,rank=self:IsSmall()
     if isSmall
     then
         return typeAndOddsArray.small,rank
     end
 
-    local isOneOneOne,rank=self:IsOneOneOne()
-    if isOneOneOne
+    local isAllOne,rank=self:IsAllOne(dicepointAndCounts)
+    if isAllOne
     then
-        return typeAndOddsArray.oneOneOne,rank
+        return typeAndOddsArray.isAllOne,rank
     end
 
     local isBig,rank=self:IsBig()
@@ -100,13 +122,13 @@ function Dice:TypeAndOdds(typeAndOddsArray)
         return typeAndOddsArray.big,rank
     end
 
-    local isTriple,rank=self:IsTriple()
+    local isTriple,rank=self:IsTriple(dicepointAndCounts)
     if isTriple
     then
         return typeAndOddsArray.triple,rank
     end
 
-    local isSingle,rank=self:isSingle()
+    local isSingle,rank=self:IsSingle(dicepointAndCounts)
     if isSingle
     then
         return typeAndOddsArray.single,rank
@@ -130,6 +152,7 @@ function Dice.RollDice(players)
             local rank=0                 
             repeat
                 dicePoint=Dice:New()
+                print(dicePoint[1]..dicePoint[2]..dicePoint[3])
                 diceTypeAndOdd,rank=dicePoint:TypeAndOdds(typeAndOddsArray)
                 rollTimes=rollTimes+1
             until (diceTypeAndOdd.type ~="nopoint") or rollTimes==3

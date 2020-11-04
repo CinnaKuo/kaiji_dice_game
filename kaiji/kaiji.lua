@@ -9,6 +9,31 @@ local round=1
 
 local sameBanker=false
 
+-- local dicepointAndCounts={one=1,two=3,three=1,four=0,five=0,six=0}
+-- local singlePoint
+-- local t=#dicepointAndCounts
+
+-- for i = 1, 6 do
+--     if dicepointAndCounts[i]==3
+--     then 
+--         singlePoint=i
+--         print(singlePoint)
+--     end
+-- end
+-- if dicepointAndCounts.one==1 and dicepointAndCounts.two==1 and dicepointAndCounts.three==1 then
+--     print("qwe")
+-- end
+
+
+local jimmy={init="init",pass="pass",settle="settle",waiting="waiting"}
+for key, value in pairs(jimmy) do
+    if value==2 then
+        return key
+    end
+end
+
+
+
 local test={2,2,1}
 local test2={2,2,1}
 if test==test2 then

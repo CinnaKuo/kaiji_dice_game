@@ -67,7 +67,7 @@ end
 function Game.GetbankerId(players)
 local bankerId
 for key, value in pairs(players) do        
-    if  value.isbanker 
+    if  value.isBanker 
     then
         bankerId=key
         break 
@@ -145,9 +145,8 @@ end
 function Game.PlaceBet(players)
     for i=1,#players do
         local player=players[i]
-        repeat
-            
-            if player.isbanker then  --莊家不下注
+        repeat          
+            if player.isBanker then  --莊家不下注
                 break  
             end
             
@@ -176,14 +175,13 @@ function Game.Settle(players,bankerId)
     for i=1,#players do    
         
         local player=players[i]
-        if (not player.isbanker) and not (player.status==Enum.status.pass) then  --莊家不跟自己比
+        if (not player.isBanker) and not (player.status==Enum.status.pass) then  --莊家不跟自己比
             local higherOdds=Game.HigherOdds(player,banker)
             local stake=player.stake
             local winner,loser,isDraw=Game.DecideWinner(player,banker)
             if isDraw then
-                winner:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
-                loser:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
-
+                player:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
+                banker:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
             else                                
                 winner:SettleMoneyAndResult(higherOdds,Enum.result.win,stake)
                 loser:SettleMoneyAndResult(higherOdds,Enum.result.lose,stake)               
@@ -213,7 +211,7 @@ end
 function Game.PrintResult(players)
     for i=1, #players do
         local player=players[i]        
-        if player.isbanker 
+        if player.isBanker 
         then
             print("player "..i.." you are banker")
         elseif  player.status==Enum.status.pass
