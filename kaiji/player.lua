@@ -4,7 +4,7 @@ local Player={}
 Player.__index=Player
 function Player:New()
     local p={}
-    p.isbanker=false
+    p.isBanker=false
     p.bankerTwice=false
     p.status=Enum.status.init
     p.stake=0
@@ -49,7 +49,7 @@ function Player:SettleMoneyAndResult(higherOdds,result,stake)
 end
 
 function Player:SetupBanker()
-    self.isbanker=true
+    self.isBanker=true
     self.status=Enum.status.waiting
 end
 
@@ -65,7 +65,7 @@ function Player:IsQualifyBecomeBankerAgain()
 end
 
 function Player:RecordClear()
-    self.isbanker=false
+    self.isBanker=false
     self.status=Enum.status.init
     self.status=0
     self.gameResult={}

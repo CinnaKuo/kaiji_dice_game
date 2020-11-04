@@ -1,7 +1,6 @@
 local Enum={}
 Enum.status={init="init",pass="pass",settle="settle",waiting="waiting"}
-Enum.dice={round=0,dice1=0,dice2=0,dice3=0}
-Enum.diceType={nopoint="nopoint",single="single",small="small",big="big",triples="triples"}
+Enum.diceType={nopoint="nopoint",single="single",small="small",big="big",triple="triple",oneOneOne="oneOneOne"}
 Enum.response={Y="Y",N="N"}
 Enum.result={win="win",lose="lose",draw="draw"}
 

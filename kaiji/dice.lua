@@ -22,55 +22,98 @@ function Dice.TypeAndOddsArray()
     d.single=Dice.TypeAndOddsNew(Enum.diceType.single,1)
     d.small=Dice.TypeAndOddsNew(Enum.diceType.small,2)
     d.big=Dice.TypeAndOddsNew(Enum.diceType.big,2)
-    d.triples=Dice.TypeAndOddsNew(Enum.diceType.triples,3)
+    d.triple=Dice.TypeAndOddsNew(Enum.diceType.triple,3)
+    d.oneOneOne=Dice.TypeAndOddsNew(Enum.diceType.oneOneOne,5)
     return d
 end
---table.sort(self)=={1,2,3}抽出來
-function Dice:TypeAndOdds(typeAndOddsArray)
+
+function Dice:IsSmall()
     local rank=0
-    if table.sort(self)=={1,2,3}
-    then
+    if self[1]==1 and self[2]==2 and self[3]==3 then
         rank=0
-        return typeAndOddsArray.small,rank
-    
-    elseif table.sort(self)=={4,5,6}
-    then
+        return true,rank
+    end   
+    return false,rank
+end
+
+function Dice:IsOneOneOne()
+    local rank=0
+    if self=={1,1,1} then
+        rank=14
+        return true,rank
+    end   
+    return false,rank
+end
+
+function Dice:IsBig()
+    local rank=0
+    if self[1]==4 and self[2]==5 and self[3]==6 then
         rank=4
-        return typeAndOddsArray.big,rank
+        return true,rank
+    end   
+    return false,rank
+end
 
-    elseif self[1] ==self[2] and self[2]==self[3]
-    then
+function Dice:IsTriple()
+    local rank=0
+    if self[1] ==self[2] and self[2]==self[3] then
         rank=self[1]+7
-        return typeAndOddsArray.triples,rank
+        return true,rank
+    end   
+    return false,rank
+end
 
-    elseif (self[1] == self[2]) or (self[2] == self[3]) or (self[3] == self[1])
+function Dice:IsSingle()
+    local rank=0
+    if (self[1] == self[2]) or (self[2] == self[3]) or (self[3] == self[1])
     then
-        local tempValueIsKey={}
-        local notRepeat={}
-        local repeatNum=0
-
-        for k,v in ipairs(self)do
-            if (not tempValueIsKey[v]) then
-                notRepeat[#notRepeat+1]=v --{5,3}
-                tempValueIsKey[v]=v
-            else
-                repeatNum=v  --5
+        for i=1,#self do
+            if self[i]==self[i+1]
+            then table.removes(self,i+1)
+                 table.removes(self,i)
             end
         end
-        --改成for迴圈
-        if repeatNum==notRepeat[1] then 
-            rank=notRepeat[2]
-        else
-            rank=notRepeat[1]
-        end
-
-        return typeAndOddsArray.single,rank
-
-    else
-        rank=-1
-        return typeAndOddsArray.nopoint,rank
+        rank=self[1]
+        return true,rank
     end
-    setmetatable(typeAndOddsArray,Dice)
+    return false,rank
+end
+
+function Dice:TypeAndOdds(typeAndOddsArray)
+    table.sort(self)
+
+    local isSmall,rank=self:IsSmall()
+    if isSmall
+    then
+        return typeAndOddsArray.small,rank
+    end
+
+    local isOneOneOne,rank=self:IsOneOneOne()
+    if isOneOneOne
+    then
+        return typeAndOddsArray.oneOneOne,rank
+    end
+
+    local isBig,rank=self:IsBig()
+    if isBig
+    then
+        return typeAndOddsArray.big,rank
+    end
+
+    local isTriple,rank=self:IsTriple()
+    if isTriple
+    then
+        return typeAndOddsArray.triple,rank
+    end
+
+    local isSingle,rank=self:isSingle()
+    if isSingle
+    then
+        return typeAndOddsArray.single,rank
+    end
+
+    local rank=-1
+    return typeAndOddsArray.nopoint,rank
 end
 
 function Dice.RollDice(players)

@@ -13,23 +13,22 @@ function Game.CreatePlayer(playerNumber)
     return players
 end
 
-
-function Game.BankerIsBigger(player,banker)
+function Game.DecideWinner(player,banker)
+    local winner
+    local loser
+    local isDraw=false
     if banker.gameResult.diceRank>player.gameResult.diceRank
     then
-        return true
-    else
-        return false
-    end   
-end
-
-function Game.PlayerIsBigger(player,banker)
-    if player.gameResult.diceRank>banker.gameResult.diceRank
+        winner=banker
+        loser=player
+    elseif player.gameResult.diceRank>banker.gameResult.diceRank
     then
-        return true
+        winner=player
+        loser=banker
     else
-        return false
+        isDraw=true
     end   
+    return winner,loser,isDraw
 end
 
 function Game.HigherOdds(player,banker)
@@ -42,7 +41,7 @@ function Game.HigherOdds(player,banker)
 end
 
 
-function Game.GetPlayerNumber()
+function Game.AskForPlayerNumber()
     io.write("Hello,how many ppl would join the game?")
     local playerNumber  = io.read()
     if Check.IsPostiveInt(playerNumber) then
@@ -50,6 +49,19 @@ function Game.GetPlayerNumber()
     else
         return false
     end
+end
+
+function Game.GetPlayerNumber()
+    local playerNumber
+    repeat
+        playerNumber=Game.AskForPlayerNumber();
+        if playerNumber then
+            print ("Welcome to the game!")
+        else
+            print ("The number is invalid.")
+        end
+    until (playerNumber)
+    return playerNumber
 end
 
 function Game.GetbankerId(players)
@@ -106,9 +118,11 @@ function Game.DecideBanker(players,playerNumber)
     end  
     --從下個人開始詢問是否當莊
     local bankerId=Game.BecomeBanker(bankerId+1,playerNumber)
-    if not bankerId then
-        EndThisRound=false
-    end   
+   
+    if bankerId==0 then
+        EndThisGame=false
+        return players,false
+    end
     --上莊
     players[bankerId]:SetupBanker()
     return players,bankerId
@@ -165,24 +179,35 @@ function Game.Settle(players,bankerId)
         if (not player.isbanker) and not (player.status==Enum.status.pass) then  --莊家不跟自己比
             local higherOdds=Game.HigherOdds(player,banker)
             local stake=player.stake
-            if Game.BankerIsBigger(player,banker)
-            then
-                player:SettleMoneyAndResult(higherOdds,Enum.result.lose,stake)
-                banker:SettleMoneyAndResult(higherOdds,Enum.result.win,stake)
-            
-            elseif Game.PlayerIsBigger(player,banker)
-            then
-                player:SettleMoneyAndResult(higherOdds,Enum.result.win,stake)
-                banker:SettleMoneyAndResult(higherOdds,Enum.result.lose,stake)
-            else
-                player:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
-                banker:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
-            end            
+            local winner,loser,isDraw=Game.DecideWinner(player,banker)
+            if isDraw then
+                winner:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
+                loser:SettleMoneyAndResult(higherOdds,Enum.result.draw,stake)
+
+            else                                
+                winner:SettleMoneyAndResult(higherOdds,Enum.result.win,stake)
+                loser:SettleMoneyAndResult(higherOdds,Enum.result.lose,stake)               
+            end
         end 
-        player.status=Enum.status.settle        
+        player.status=Enum.status.settle    
     end
     players[bankerId].status=Enum.status.settle
     return players
+end
+
+
+function Game.IsSameBanker(players,bankerId)
+    local sameBanker
+    if Game.IsBecomeBankerAgain(players,bankerId)
+    then
+        Game.AllPlayerGameRecordClear(players)
+        players[bankerId].bankerTwice=true
+        players[bankerId].isBanker=true
+        sameBanker=true        
+    else
+        sameBanker=false
+    end
+    return players,sameBanker
 end
 
 function Game.PrintResult(players)
